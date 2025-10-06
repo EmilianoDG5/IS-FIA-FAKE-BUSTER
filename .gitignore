@@ -1,3 +1,19 @@
+# === FILE TEMPORANEI DI MICROSOFT WORD ===
+
+# File temporanei (~$...) creati da Word quando un documento è aperto
+~$*
+
+# File di backup temporanei (.tmp)
+*.tmp
+
+# File temporanei di salvataggio automatico (.asd)
+*.asd
+
+# File di recupero automatico
+*.wbk
+
+# File di lock temporanei
+*.lnk
 
 # === FILE TEMPORANEI DI MICROSOFT WORD ===
 
