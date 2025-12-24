@@ -31,4 +31,5 @@
 
 # File di lock temporanei
 *.lnk
-
+#cartella
+fakebuster_model/
