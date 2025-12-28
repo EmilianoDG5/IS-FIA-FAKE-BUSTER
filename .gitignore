@@ -31,6 +31,8 @@
 
 # File di lock temporanei
 *.lnk
-
+#file .csv
+test_set.csv
 #cartella
 fakebuster_model/
+
