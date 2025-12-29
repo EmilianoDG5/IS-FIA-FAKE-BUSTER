@@ -35,4 +35,25 @@
 test_set.csv
 #cartella
 fakebuster_model/
+# Ambiente virtuale
+venv/
+.env/
 
+# Cache Python
+__pycache__/
+*.pyc
+
+# File di sistema
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Modello IA (TROPPO GRANDE PER GIT)
+fakebuster_model/
+*.safetensors
+
+# Log
+*.log
