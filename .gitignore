@@ -36,3 +36,9 @@ test_set.csv
 #cartella
 fakebuster_model/
 
+venv/
+__pycache__/
+*.pyc
+instance/
+.env
+.idea/
