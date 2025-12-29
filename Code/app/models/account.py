@@ -1,8 +1,17 @@
 from app import db
+from datetime import datetime
 
-class Appello(db.Model):
-    __tablename__ = "appelli"
+class Account(db.Model):
+    __tablename__ = "accounts"
 
     id = db.Column(db.Integer, primary_key=True)
-    motivazione = db.Column(db.Text, nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
+
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+
+    ruolo = db.Column(db.String(20), nullable=False)  # user | fact_checker
+    data_reg = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relazioni
+    posts = db.relationship("Post", backref="autore", lazy=True)
