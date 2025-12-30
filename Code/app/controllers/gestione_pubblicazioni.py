@@ -1,5 +1,3 @@
-gestione_pubblicazioni.py
-
 from flask import Blueprint, request, jsonify
 from app.services.ai_service import AIService
 from app.models.post import Post
