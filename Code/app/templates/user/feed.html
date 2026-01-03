@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Feed – FakeBuster</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>FakeBuster</h1>
+    <nav>
+        <a href="/new_post">Nuovo Post</a>
+        <a href="/my_posts/{{ account_id }}">I miei post</a>
+    </nav>
+</header>
+
+<main>
+    {% for post in posts %}
+    <div class="post">
+        <h3>{{ post.titolo }}</h3>
+        <p>{{ post.testo }}</p>
+        <small>Score IA: {{ post.ai_score }}</small>
+    </div>
+    {% else %}
+    <p>Nessun post disponibile</p>
+    {% endfor %}
+</main>
+
+</body>
+</html>

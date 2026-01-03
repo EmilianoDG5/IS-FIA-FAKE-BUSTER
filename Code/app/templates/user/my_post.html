@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>I miei post – FakeBuster</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>FakeBuster</h1>
+</header>
+
+<main>
+    {% for post in posts %}
+    <div class="post">
+        <h3>{{ post.titolo }}</h3>
+        <p>Stato: <strong>{{ post.stato }}</strong></p>
+
+        {% if post.stato == "bloccato" %}
+            <button>Presenta Appello</button>
+        {% endif %}
+    </div>
+    {% else %}
+    <p>Nessun post trovato</p>
+    {% endfor %}
+</main>
+
+</body>
+</html>

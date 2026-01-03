@@ -6,14 +6,26 @@ from datetime import datetime
 
 
 class AIService:
+ 
+
+class AIService:
     def __init__(self):
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-        model_path = os.path.join(base_dir, "fakebuster_model")
+        # Salgo fino alla root del progetto
+        project_root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "../../../")
+        )
+
+        # Percorso reale del modello
+        model_path = os.path.join(
+            project_root, "FIA", "traning", "fakebuster_model"
+        )
+
+        print("MODEL PATH:", model_path)
+        print("EXISTS:", os.path.exists(model_path))
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_path)
         self.model.eval()
-
     def analyze_text(self, text: str):
         inputs = self.tokenizer(
             text,

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Revisione Post</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Revisione Post</h1>
+</header>
+
+<main class="centered">
+    <div class="card">
+        <h3>{{ post.titolo }}</h3>
+        <p>{{ post.testo }}</p>
+        <p>Score IA: {{ post.ai_score }}</p>
+
+        <button>Pubblica</button>
+        <button>Mantieni Bloccato</button>
+    </div>
+</main>
+
+</body>
+</html>

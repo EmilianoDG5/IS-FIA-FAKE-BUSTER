@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuovo Post – FakeBuster</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>FakeBuster</h1>
+</header>
+
+<main class="centered">
+    <div class="card">
+        <h2>Nuovo Post</h2>
+
+        <form id="postForm">
+            <input type="text" name="titolo" placeholder="Titolo" required>
+            <textarea name="testo" placeholder="Testo del post" required></textarea>
+            <button type="submit">Invia</button>
+        </form>
+    </div>
+</main>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
