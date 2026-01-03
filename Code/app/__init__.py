@@ -12,11 +12,15 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # Import modelli
-    from app.models import account, post, appello, segnalazione
-
-    # Import blueprint
+    # 🔹 IMPORT E REGISTRAZIONE BLUEPRINT
+    from app.controllers.gestione_utenza import utenza_bp
     from app.controllers.gestione_pubblicazioni import pubblicazioni_bp
+    from app.controllers.gestione_appelli import appelli_bp
+    from app.controllers.gestione_segnalazioni import segnalazioni_bp
+
+    app.register_blueprint(utenza_bp)
     app.register_blueprint(pubblicazioni_bp)
+    app.register_blueprint(appelli_bp)
+    app.register_blueprint(segnalazioni_bp)
 
     return app

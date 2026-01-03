@@ -3,9 +3,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.account import Account
 from app import db
 
-utenza_bp = Blueprint("utenza", name)
+utenza_bp = Blueprint("utenza",  __name__)
 
----------- VIEW ----------,
+#---------- VIEW ----------,
 @utenza_bp.route("/login", methods=["GET"])
 def login_page():
     return render_template("guest/login.html")
@@ -19,7 +19,7 @@ def logout():
     session.clear()
     return redirect("/login")
 
----------- API ----------,
+#---------- API ----------,
 @utenza_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()

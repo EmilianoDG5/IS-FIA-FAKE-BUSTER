@@ -4,10 +4,10 @@ from app.models.post import Post
 from app import db
 from config import SCORE_THRESHOLD
 
-pubblicazioni_bp = Blueprint("pubblicazioni", name)
+pubblicazioni_bp = Blueprint("pubblicazioni",  __name__)
 ai_service = AIService()
 
----------- VIEW ----------,
+#---------- VIEW ----------,
 @pubblicazioni_bp.route("/feed")
 def feed():
     if "user_id" not in session:
@@ -23,7 +23,7 @@ def new_post_page():
         return redirect("/login")
     return render_template("user/new_post.html")
 
----------- API ----------,
+#---------- API ----------,
 @pubblicazioni_bp.route("/posts", methods=["POST"])
 def create_post():
     if "user_id" not in session:

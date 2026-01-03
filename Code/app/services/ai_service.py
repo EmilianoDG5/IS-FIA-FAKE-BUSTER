@@ -6,9 +6,6 @@ from datetime import datetime
 
 
 class AIService:
- 
-
-class AIService:
     def __init__(self):
         # Salgo fino alla root del progetto
         project_root = os.path.abspath(

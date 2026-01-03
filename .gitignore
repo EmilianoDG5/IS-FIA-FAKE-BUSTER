@@ -35,6 +35,8 @@
 test_set.csv
 #cartella
 fakebuster_model/
+migrations/
+
 # Ambiente virtuale
 venv/
 .env/
