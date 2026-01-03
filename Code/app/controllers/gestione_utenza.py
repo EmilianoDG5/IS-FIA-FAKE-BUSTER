@@ -1,53 +1,62 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session, redirect, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.account import Account
 from app import db
 
-utenza_bp = Blueprint("utenza", __name__)
+utenza_bp = Blueprint("utenza", name)
 
+---------- VIEW ----------,
+@utenza_bp.route("/login", methods=["GET"])
+def login_page():
+    return render_template("guest/login.html")
 
+@utenza_bp.route("/register", methods=["GET"])
+def register_page():
+    return render_template("guest/register.html")
+
+@utenza_bp.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
+
+---------- API ----------,
 @utenza_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
 
-    username = data.get("username")
-    email = data.get("email")
-    password = data.get("password")
-
-    if not username or not email or not password:
+    if not all(k in data for k in ("username", "email", "password")):
         return jsonify({"error": "Dati mancanti"}), 400
 
     if Account.query.filter(
-        (Account.username == username) | (Account.email == email)
+        (Account.username == data["username"]) |
+        (Account.email == data["email"])
     ).first():
         return jsonify({"error": "Utente già esistente"}), 409
 
     account = Account(
-        username=username,
-        email=email,
-        password_hash=generate_password_hash(password),
+        username=data["username"],
+        email=data["email"],
+        password_hash=generate_password_hash(data["password"]),
         ruolo="user"
     )
 
     db.session.add(account)
     db.session.commit()
 
-    return jsonify({"message": "Registrazione avvenuta con successo"}), 201
+    return jsonify({"message": "Registrazione OK"}), 201
 
 
 @utenza_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
 
-    username = data.get("username")
-    password = data.get("password")
+    account = Account.query.filter_by(username=data.get("username")).first()
 
-    account = Account.query.filter_by(username=username).first()
+    if not account or not check_password_hash(account.password_hash, data.get("password")):
+        return jsonify({"error": "Credenziali errate"}), 401
 
-    if not account or not check_password_hash(account.password_hash, password):
-        return jsonify({"error": "Credenziali non valide"}), 401
+    # SESSIONE
+    session["user_id"] = account.id
+    session["ruolo"] = account.ruolo
 
-    return jsonify({
-        "id": account.id,
-        "ruolo": account.ruolo
-    })
+    return jsonify({"message": "Login OK"})

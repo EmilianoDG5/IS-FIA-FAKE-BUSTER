@@ -1,44 +1,49 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session, redirect, render_template
 from app.services.ai_service import AIService
 from app.models.post import Post
 from app import db
 from config import SCORE_THRESHOLD
 
-pubblicazioni_bp = Blueprint("pubblicazioni", __name__)
+pubblicazioni_bp = Blueprint("pubblicazioni", name)
 ai_service = AIService()
 
+---------- VIEW ----------,
+@pubblicazioni_bp.route("/feed")
+def feed():
+    if "user_id" not in session:
+        return redirect("/login")
 
+    posts = Post.query.filter_by(stato="pubblicato").all()
+    return render_template("user/feed.html", posts=posts, account_id=session["user_id"])
+
+
+@pubblicazioni_bp.route("/new_post")
+def new_post_page():
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template("user/new_post.html")
+
+---------- API ----------,
 @pubblicazioni_bp.route("/posts", methods=["POST"])
 def create_post():
+    if "user_id" not in session:
+        return jsonify({"error": "Non autenticato"}), 401
+
     data = request.get_json()
 
-    titolo = data.get("titolo")
-    testo = data.get("testo")
-    img_url = data.get("img_url")
-    account_id = data.get("account_id")
-
-    if not titolo or not testo or not account_id:
-        return jsonify({"error": "Dati mancanti"}), 400
-
-    score, ai_log = ai_service.analyze_text(testo)
-
+    score, ai_log = ai_service.analyze_text(data["testo"])
     stato = "pubblicato" if score >= SCORE_THRESHOLD else "bloccato"
 
     post = Post(
-        titolo=titolo,
-        testo=testo,
-        img_url=img_url,
+        titolo=data["titolo"],
+        testo=data["testo"],
         stato=stato,
         ai_score=score,
         ai_log=ai_log,
-        account_id=account_id
+        account_id=session["user_id"]
     )
 
     db.session.add(post)
     db.session.commit()
 
-    return jsonify({
-        "post_id": post.id,
-        "score": score,
-        "stato": stato
-    }), 201
+    return jsonify({"message": "Post creato", "stato": stato}), 201
