@@ -3,7 +3,6 @@ from app.services.ai_service import AIService
 from app.models.post import Post
 from app import db
 from config import SCORE_THRESHOLD
-
 pubblicazioni_bp = Blueprint("pubblicazioni",  __name__)
 ai_service = AIService()
 
@@ -14,7 +13,12 @@ def feed():
         return redirect("/login")
 
     posts = Post.query.filter_by(stato="pubblicato").all()
-    return render_template("user/feed.html", posts=posts, account_id=session["user_id"])
+    return render_template(
+    "user/feed.html",
+    posts=posts,
+    username=session.get("username")
+)
+
 
 
 @pubblicazioni_bp.route("/new_post")
@@ -31,19 +35,19 @@ def create_post():
 
     data = request.get_json()
 
-    score, ai_log = ai_service.analyze_text(data["testo"])
-    stato = "pubblicato" if score >= SCORE_THRESHOLD else "bloccato"
+    fake_prob, real_prob, ai_log = ai_service.analyze_text(data["testo"])
+    stato = "pubblicato" if real_prob >= SCORE_THRESHOLD else "bloccato"
 
     post = Post(
         titolo=data["titolo"],
         testo=data["testo"],
+        img_url=data.get("img_url"),
         stato=stato,
-        ai_score=score,
+        ai_score=real_prob,
         ai_log=ai_log,
-        account_id=session["user_id"]
+     account_id=session["user_id"]
     )
 
     db.session.add(post)
     db.session.commit()
-
     return jsonify({"message": "Post creato", "stato": stato}), 201

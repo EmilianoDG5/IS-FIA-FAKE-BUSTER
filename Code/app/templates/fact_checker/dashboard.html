@@ -12,15 +12,23 @@
 </header>
 
 <main>
-    {% for post in posts %}
+ {% for post in posts %}
     <div class="post">
         <h3>{{ post.titolo }}</h3>
-        <p>Score IA: {{ post.ai_score }}</p>
-        <a href="/review/{{ post.id }}">Revisiona</a>
+        <p>{{ post.testo }}</p>
+        <small>Score IA: {{ post.ai_score }}</small>
+
+        <form method="post" action="/fact_checker/publish/{{ post.id }}" style="display:inline;">
+            <button type="submit">Pubblica</button>
+        </form>
+
+        <form method="post" action="/fact_checker/block/{{ post.id }}" style="display:inline;">
+            <button type="submit">Mantieni bloccato</button>
+        </form>
     </div>
-    {% else %}
+{% else %}
     <p>Nessun post da revisionare</p>
-    {% endfor %}
+{% endfor %}
 </main>
 
 </body>

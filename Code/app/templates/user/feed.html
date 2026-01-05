@@ -9,23 +9,37 @@
 
 <header>
     <h1>FakeBuster</h1>
+
     <nav>
+        <span class="user">
+            {{ username }} |
+            <a href="/logout">Logout</a>
+        </span>
+        <br>
         <a href="/new_post">Nuovo Post</a>
-        <a href="/my_posts/{{ account_id }}">I miei post</a>
+        <a href="/my_posts">I miei post</a>
     </nav>
 </header>
 
 <main>
     {% for post in posts %}
-    <div class="post">
-        <h3>{{ post.titolo }}</h3>
-        <p>{{ post.testo }}</p>
-        <small>Score IA: {{ post.ai_score }}</small>
-    </div>
+        <div class="post">
+            <h3>{{ post.titolo }}</h3>
+            <p>{{ post.testo }}</p>
+            <small>Score IA: {{ post.ai_score }}</small>
+
+            {% if post.account_id != session["user_id"] %}
+      <form method="post" action="/segnala/{{ post.id }}">
+    <button type="submit">Segnala</button>
+</form>
+
+            {% endif %}
+        </div>
     {% else %}
-    <p>Nessun post disponibile</p>
+        <p>Nessun post disponibile</p>
     {% endfor %}
 </main>
+
 
 </body>
 </html>

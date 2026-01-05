@@ -35,12 +35,13 @@ class AIService:
             outputs = self.model(**inputs)
             probs = torch.softmax(outputs.logits, dim=1)
 
-        score = probs[0][1].item()
+        fake_prob = probs[0][0].item() 
+        real_prob = probs[0][1].item() 
 
         ai_log = {
-            "timestamp": datetime.utcnow().isoformat(),
-            "model": "xlm-roberta",
-            "score": round(score, 3)
-        }
-
-        return round(score, 3), json.dumps(ai_log)
+        "timestamp": datetime.utcnow().isoformat(),
+        "model": "xlm-roberta",
+        "fake_prob": round(fake_prob, 3),
+        "real_prob": round(real_prob, 3)
+            }
+        return fake_prob, real_prob, json.dumps(ai_log)

@@ -1,0 +1,68 @@
+async function sendForm(form, url) {
+    const data = Object.fromEntries(new FormData(form));
+
+    const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+
+    return res;
+}
+
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+    loginForm.addEventListener("submit", async e => {
+        e.preventDefault();
+
+        const data = Object.fromEntries(new FormData(loginForm));
+
+        const res = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.redirect) {
+            window.location.href = result.redirect;
+        } else {
+            alert("Credenziali errate");
+        }
+    });
+}
+
+
+const registerForm = document.getElementById("registerForm");
+if (registerForm) {
+    registerForm.addEventListener("submit", async e => {
+        e.preventDefault();
+        const res = await sendForm(registerForm, "/register");
+        alert(res.ok ? "Registrazione OK" : "Errore registrazione");
+    });
+}
+
+const postForm = document.getElementById("postForm");
+
+if (postForm) {
+    postForm.addEventListener("submit", async e => {
+        e.preventDefault();
+
+        const data = Object.fromEntries(new FormData(postForm));
+
+        const res = await fetch("/posts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+            window.location.href = "/feed";
+        } else {
+            alert("Errore creazione post");
+        }
+    });
+}

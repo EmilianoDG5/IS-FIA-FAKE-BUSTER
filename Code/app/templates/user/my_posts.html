@@ -18,7 +18,11 @@
         <p>Stato: <strong>{{ post.stato }}</strong></p>
 
         {% if post.stato == "bloccato" %}
-            <button>Presenta Appello</button>
+           <form method="post" action="/appelli">
+    <input type="hidden" name="post_id" value="{{ post.id }}">
+    <input type="hidden" name="motivazione" value="Richiesta revisione">
+    <button type="submit">Presenta Appello</button>
+</form>
         {% endif %}
     </div>
     {% else %}

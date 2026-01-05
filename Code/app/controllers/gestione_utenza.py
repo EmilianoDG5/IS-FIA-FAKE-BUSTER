@@ -58,5 +58,9 @@ def login():
     # SESSIONE
     session["user_id"] = account.id
     session["ruolo"] = account.ruolo
-
-    return jsonify({"message": "Login OK"})
+    session["username"] = account.username
+  
+    if account.ruolo == "fact_checker":
+        return jsonify({"redirect": "/dashboard"})
+    else:
+        return jsonify({"redirect": "/feed"})
