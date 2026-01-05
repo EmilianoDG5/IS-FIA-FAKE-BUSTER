@@ -35,19 +35,32 @@ def create_post():
 
     data = request.get_json()
 
-    fake_prob, real_prob, ai_log = ai_service.analyze_text(data["testo"])
-    stato = "pubblicato" if real_prob >= SCORE_THRESHOLD else "bloccato"
+    score, ai_log = ai_service.analyze_text(data["testo"])
+
+    # TESTO NON VALIDO (casuale, lingua errata, troppo corto)
+    if score < 0:
+        return jsonify({
+            "error": "Il testo inserito non è valido o non è semanticamente coerente"
+        }), 400
+
+    # decisione IA
+    stato = "pubblicato" if score >= SCORE_THRESHOLD else "bloccato"
 
     post = Post(
         titolo=data["titolo"],
         testo=data["testo"],
         img_url=data.get("img_url"),
         stato=stato,
-        ai_score=real_prob,
+        ai_score=score,
         ai_log=ai_log,
-     account_id=session["user_id"]
+        account_id=session["user_id"]
     )
 
     db.session.add(post)
     db.session.commit()
-    return jsonify({"message": "Post creato", "stato": stato}), 201
+
+    return jsonify({
+        "message": "Post creato",
+        "stato": stato,
+        "score": round(score, 3)
+    }), 201
