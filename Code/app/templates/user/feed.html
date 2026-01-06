@@ -28,12 +28,13 @@
             <p>{{ post.testo }}</p>
             <small>Score IA: {{ post.ai_score }}</small>
 
-            {% if post.account_id != session["user_id"] %}
-      <form method="post" action="/segnala/{{ post.id }}">
+{% if post.account_id != session["user_id"] %}
+<form method="POST" action="/segnala/{{ post.id }}">
+    <textarea name="motivo" required
+              placeholder="Motivazione della segnalazione"></textarea>
     <button type="submit">Segnala</button>
 </form>
-
-            {% endif %}
+{% endif %}
         </div>
     {% else %}
         <p>Nessun post disponibile</p>

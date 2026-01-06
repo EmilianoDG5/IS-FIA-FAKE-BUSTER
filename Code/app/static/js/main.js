@@ -41,13 +41,14 @@ if (registerForm) {
         const res = await sendForm(registerForm, "/register");
         alert(res.ok ? "Registrazione OK" : "Errore registrazione");
     });
-}
-
-const postForm = document.getElementById("postForm");
+}const postForm = document.getElementById("postForm");
 
 if (postForm) {
     postForm.addEventListener("submit", async e => {
         e.preventDefault();
+
+        const submitBtn = postForm.querySelector("button[type='submit']");
+        submitBtn.disabled = true;
 
         const data = Object.fromEntries(new FormData(postForm));
 
@@ -59,10 +60,37 @@ if (postForm) {
 
         const result = await res.json();
 
-        if (res.ok) {
-            window.location.href = "/feed";
-        } else {
+        submitBtn.disabled = false; 
+
+        if (!res.ok) {
             alert("Errore creazione post");
+            return;
+        }
+
+        if (result.stato === "bloccato") {
+            openAppelloPopup(result.post_id); 
+        } else {
+            window.location.href = "/feed";
         }
     });
+}
+
+
+
+
+function openAppelloPopup(postId) {
+    const form = document.getElementById("appelloForm");
+    form.action = "/appello/" + postId;
+
+    document.getElementById("appelloPopup").style.display = "block";
+}
+
+function closePopup() {
+    document.getElementById("appelloPopup").style.display = "none";
+
+    const postForm = document.getElementById("postForm");
+    if (postForm) {
+        const submitBtn = postForm.querySelector("button[type='submit']");
+        submitBtn.disabled = false;
+    }
 }

@@ -22,7 +22,17 @@
         </form>
     </div>
 </main>
+<div id="appelloPopup" class="modal">
+  <div class="modal-content">
+    <h3>Post bloccato dall’IA</h3>
+    <p>Il tuo post è stato bloccato automaticamente.</p>
 
+    <form id="appelloForm" method="post">
+      <button type="submit">Fai appello</button>
+      <button type="button" onclick="closePopup()">Annulla</button>
+    </form>
+  </div>
+</div>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

@@ -36,31 +36,53 @@ def create_post():
     data = request.get_json()
 
     score, ai_log = ai_service.analyze_text(data["testo"])
-
-    # TESTO NON VALIDO (casuale, lingua errata, troppo corto)
-    if score < 0:
-        return jsonify({
-            "error": "Il testo inserito non è valido o non è semanticamente coerente"
-        }), 400
-
-    # decisione IA
     stato = "pubblicato" if score >= SCORE_THRESHOLD else "bloccato"
 
     post = Post(
         titolo=data["titolo"],
         testo=data["testo"],
-        img_url=data.get("img_url"),
         stato=stato,
         ai_score=score,
         ai_log=ai_log,
         account_id=session["user_id"]
+
     )
 
     db.session.add(post)
     db.session.commit()
 
+
+    if stato == "bloccato":
+        return jsonify({
+         "stato": "bloccato",
+            "post_id": post.id,
+            "score": score
+        }), 200
+
     return jsonify({
-        "message": "Post creato",
-        "stato": stato,
-        "score": round(score, 3)
-    }), 201
+        "status": "published"
+    }), 200
+
+
+@pubblicazioni_bp.route("/posts/delete/<int:post_id>", methods=["POST"])
+def delete_post(post_id):
+    if "user_id" not in session:
+        return redirect("/login")
+
+    post = Post.query.get_or_404(post_id)
+
+    # 🔒 sicurezza: solo il proprietario
+    if post.account_id != session["user_id"]:
+        return "Accesso negato", 403
+
+    db.session.delete(post)
+    db.session.commit()
+
+    return redirect("/my_posts")
+@pubblicazioni_bp.route("/my_posts")
+def my_posts():
+    if "user_id" not in session:
+        return redirect("/login")
+
+    posts = Post.query.filter_by(account_id=session["user_id"]).all()
+    return render_template("user/my_posts.html", posts=posts)

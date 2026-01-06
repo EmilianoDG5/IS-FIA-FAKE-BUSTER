@@ -8,27 +8,48 @@
 <body>
 
 <header>
-    <h1>FakeBuster</h1>
+    <h2>I miei post</h2>
+    <a href="/feed">⬅ Torna al feed</a>
 </header>
 
 <main>
-    {% for post in posts %}
+{% for post in posts %}
     <div class="post">
         <h3>{{ post.titolo }}</h3>
-        <p>Stato: <strong>{{ post.stato }}</strong></p>
+        <p>{{ post.testo }}</p>
 
-        {% if post.stato == "bloccato" %}
-           <form method="post" action="/appelli">
-    <input type="hidden" name="post_id" value="{{ post.id }}">
-    <input type="hidden" name="motivazione" value="Richiesta revisione">
-    <button type="submit">Presenta Appello</button>
-</form>
-        {% endif %}
+        <p>
+            <strong>Stato:</strong> {{ post.stato }} <br>
+            <strong>Score IA:</strong> {{ post.ai_score }}
+        </p>
+
+        <form method="POST"
+              action="/posts/delete/{{ post.id }}"
+              onsubmit="return confirm('Vuoi eliminare definitivamente questo post?');">
+            <button type="submit" class="danger">Elimina</button>
+        </form>
     </div>
-    {% else %}
-    <p>Nessun post trovato</p>
-    {% endfor %}
+{% else %}
+    <p>Non hai ancora creato post.</p>
+{% endfor %}
 </main>
+
+<!-- POPUP APPELLO -->
+<div id="appelloPopup" class="modal">
+    <div class="modal-content">
+        <h3>Post bloccato dall’IA</h3>
+
+        <p>
+            Il tuo post è stato bloccato automaticamente
+            in base allo score dell’intelligenza artificiale.
+        </p>
+
+        <form id="appelloForm" method="post">
+            <button type="submit">Fai appello</button>
+            <button type="button" onclick="closePopup()">Annulla</button>
+        </form>
+    </div>
+</div>
 
 </body>
 </html>

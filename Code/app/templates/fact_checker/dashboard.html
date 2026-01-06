@@ -12,23 +12,54 @@
 </header>
 
 <main>
- {% for post in posts %}
-    <div class="post">
-        <h3>{{ post.titolo }}</h3>
-        <p>{{ post.testo }}</p>
-        <small>Score IA: {{ post.ai_score }}</small>
 
-        <form method="post" action="/fact_checker/publish/{{ post.id }}" style="display:inline;">
-            <button type="submit">Pubblica</button>
-        </form>
+<!-- ================= APPELLI ================= -->
+<section>
+    <h2>Appelli IA (Post bloccati automaticamente)</h2>
+{% for a in appelli %}
+  <div class="post">
+    <h3>{{ a.post.titolo }}</h3>
 
-        <form method="post" action="/fact_checker/block/{{ post.id }}" style="display:inline;">
-            <button type="submit">Mantieni bloccato</button>
-        </form>
-    </div>
-{% else %}
-    <p>Nessun post da revisionare</p>
+    <form method="post"
+          action="/fact_checker/appelli/publish/{{ a.id }}">
+      <button>Pubblica</button>
+    </form>
+
+    <form method="post"
+          action="/fact_checker/appelli/block/{{ a.id }}">
+      <button>Mantieni bloccato</button>
+    </form>
+  </div>
 {% endfor %}
+
+</section>
+
+<hr>
+
+<!-- ================= SEGNALAZIONI ================= -->
+<section>
+    <h2>Segnalazioni utenti</h2>
+
+    {% for s in segnalazioni %}
+        <div class="post">
+            <h3>{{ s.post.titolo }}</h3>
+            <p>{{ s.post.testo }}</p>
+
+            <p><strong>Motivazione:</strong> {{ s.motivo }}</p>
+
+           <form method="post" action="/fact_checker/segnalazioni/publish/{{ s.id }}">
+        <button>Pubblica</button>
+    </form>
+
+    <form method="post" action="/fact_checker/segnalazioni/block/{{ s.id }}">
+        <button>Mantieni bloccato</button>
+</form>
+        </div>
+    {% else %}
+        <p>Nessuna segnalazione aperta</p>
+    {% endfor %}
+</section>
+
 </main>
 
 </body>

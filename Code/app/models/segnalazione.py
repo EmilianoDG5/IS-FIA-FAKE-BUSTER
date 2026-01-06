@@ -28,3 +28,5 @@ class Segnalazione(db.Model):
         db.ForeignKey("accounts.id"),
         nullable=False
     )
+
+    post = db.relationship("Post", backref="segnalazioni")
