@@ -8,7 +8,11 @@
 <body class="centered">
 
 <div class="card">
-    <h1>FakeBuster</h1>
+       <div class="logo">
+        <img src="{{ url_for('static', filename='img/logo_fakebuster.png') }}" height="40">
+        <h1>FakeBuster</h1>
+    </div>
+
     <h2>Registrazione</h2>
 
     <form id="registerForm">
@@ -18,7 +22,7 @@
         <button type="submit">Registrati</button>
     </form>
 
-    <p>Hai già un account? <a href="/login">Login</a></p>
+    <p>Hai già un account? <a href="/login">Accedi</a></p>
 </div>
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
