@@ -22,4 +22,3 @@ class Appello(db.Model):
         db.ForeignKey("accounts.id")
     )
 
-    post = db.relationship("Post", backref="appelli")

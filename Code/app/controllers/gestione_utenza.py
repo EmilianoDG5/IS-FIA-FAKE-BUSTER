@@ -20,6 +20,15 @@ def logout():
     return redirect("/login")
 
 #---------- API ----------,
+@utenza_bp.route("/")
+def home():
+    if "user_id" in session:
+        # se loggato, vai dove devi andare
+        if session.get("ruolo") == "fact_checker":
+            return redirect("/dashboard")
+        return redirect("/feed")
+
+    return render_template("guest/home.html")
 @utenza_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()

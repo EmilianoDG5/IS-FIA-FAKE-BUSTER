@@ -1,4 +1,5 @@
-from flask import Blueprint, session, redirect
+from flask import Blueprint, session, redirect, request
+
 from app.models.appello import Appello
 from app.models.post import Post
 from app import db
@@ -8,7 +9,6 @@ appelli_bp = Blueprint(
     __name__,
     url_prefix="/fact_checker/appelli"
 )
-
 @appelli_bp.route("/publish/<int:appello_id>", methods=["POST"])
 def publish_appello(appello_id):
     if session.get("ruolo") != "fact_checker":
@@ -22,7 +22,7 @@ def publish_appello(appello_id):
     appello.esito = "accettato"
 
     db.session.commit()
-    return redirect("/fact_checker/dashboard")
+    return redirect("/dashboard")
 
 
 @appelli_bp.route("/block/<int:appello_id>", methods=["POST"])
@@ -38,4 +38,25 @@ def block_appello(appello_id):
     appello.esito = "respinto"
 
     db.session.commit()
-    return redirect("/fact_checker/dashboard")
+    return redirect("/dashboard")
+
+@appelli_bp.route("/create/<int:post_id>", methods=["POST"])
+def crea_appello(post_id):
+    if "user_id" not in session:
+        return redirect("/login")
+
+    motivazione = request.form.get("motivazione")
+
+    if not motivazione:
+        return "Motivazione mancante", 400
+
+    appello = Appello(
+        post_id=post_id,
+        stato="aperto",
+        motivazione=motivazione
+    )
+
+    db.session.add(appello)
+    db.session.commit()
+
+    return redirect("/my_posts")

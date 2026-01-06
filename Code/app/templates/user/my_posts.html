@@ -8,48 +8,36 @@
 <body>
 
 <header>
-    <h2>I miei post</h2>
-    <a href="/feed">⬅ Torna al feed</a>
+    <div class="header">
+          <div class="logo">
+        <img src="{{ url_for('static', filename='img/logo_fakebuster.png') }}" height="40">
+        <h1>FakeBuster</h1>
+    </div>
+        <nav>
+            <a href="/feed">Feed</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </div>
 </header>
 
-<main>
+<main class="container">
 {% for post in posts %}
     <div class="post">
         <h3>{{ post.titolo }}</h3>
         <p>{{ post.testo }}</p>
 
-        <p>
-            <strong>Stato:</strong> {{ post.stato }} <br>
-            <strong>Score IA:</strong> {{ post.ai_score }}
-        </p>
+        <span class="badge {{ post.stato }}">{{ post.stato }}</span>
+        <small>Score IA: {{ post.ai_score }}</small>
 
-        <form method="POST"
-              action="/posts/delete/{{ post.id }}"
-              onsubmit="return confirm('Vuoi eliminare definitivamente questo post?');">
-            <button type="submit" class="danger">Elimina</button>
+        <form method="POST" action="/posts/delete/{{ post.id }}">
+            <button class="danger">Elimina</button>
         </form>
     </div>
 {% else %}
-    <p>Non hai ancora creato post.</p>
+    <p>Nessun post creato.</p>
 {% endfor %}
 </main>
 
-<!-- POPUP APPELLO -->
-<div id="appelloPopup" class="modal">
-    <div class="modal-content">
-        <h3>Post bloccato dall’IA</h3>
-
-        <p>
-            Il tuo post è stato bloccato automaticamente
-            in base allo score dell’intelligenza artificiale.
-        </p>
-
-        <form id="appelloForm" method="post">
-            <button type="submit">Fai appello</button>
-            <button type="button" onclick="closePopup()">Annulla</button>
-        </form>
-    </div>
-</div>
-
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

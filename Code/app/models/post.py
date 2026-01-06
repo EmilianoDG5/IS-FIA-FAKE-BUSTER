@@ -21,3 +21,8 @@ class Post(db.Model):
         db.ForeignKey("accounts.id"),
         nullable=False
     )
+    appello = db.relationship(
+        "Appello",
+        backref="post",
+        cascade="all, delete-orphan"
+    )

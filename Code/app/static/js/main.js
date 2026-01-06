@@ -1,3 +1,6 @@
+/* =========================
+   UTILITY
+========================= */
 async function sendForm(form, url) {
     const data = Object.fromEntries(new FormData(form));
 
@@ -10,9 +13,13 @@ async function sendForm(form, url) {
     return res;
 }
 
+/* =========================
+   LOGIN
+========================= */
 const loginForm = document.getElementById("loginForm");
+
 if (loginForm) {
-    loginForm.addEventListener("submit", async e => {
+    loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const data = Object.fromEntries(new FormData(loginForm));
@@ -33,21 +40,36 @@ if (loginForm) {
     });
 }
 
-
+/* =========================
+   REGISTRAZIONE
+========================= */
 const registerForm = document.getElementById("registerForm");
+
 if (registerForm) {
-    registerForm.addEventListener("submit", async e => {
+    registerForm.addEventListener("submit", async (e) => {
         e.preventDefault();
+
         const res = await sendForm(registerForm, "/register");
-        alert(res.ok ? "Registrazione OK" : "Errore registrazione");
+
+        if (res.ok) {
+            alert("Registrazione completata");
+            window.location.href = "/login";
+        } else {
+            alert("Errore durante la registrazione");
+        }
     });
-}const postForm = document.getElementById("postForm");
+}
+
+/* =========================
+   NUOVO POST + IA
+========================= */
+const postForm = document.getElementById("postForm");
 
 if (postForm) {
-    postForm.addEventListener("submit", async e => {
+    postForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const submitBtn = postForm.querySelector("button[type='submit']");
+        const submitBtn = postForm.querySelector("button");
         submitBtn.disabled = true;
 
         const data = Object.fromEntries(new FormData(postForm));
@@ -59,38 +81,61 @@ if (postForm) {
         });
 
         const result = await res.json();
-
-        submitBtn.disabled = false; 
+        submitBtn.disabled = false;
 
         if (!res.ok) {
             alert("Errore creazione post");
             return;
         }
 
+        // ❌ BLOCCATO DALL'IA → POPUP
         if (result.stato === "bloccato") {
-            openAppelloPopup(result.post_id); 
-        } else {
+            openAppelloPopup(result.post_id);
+        }
+        // ✅ PUBBLICATO → FEED
+        else {
             window.location.href = "/feed";
         }
     });
 }
 
-
-
-
+/* =========================
+   POPUP APPELLO
+========================= */
 function openAppelloPopup(postId) {
+    const popup = document.getElementById("appelloPopup");
     const form = document.getElementById("appelloForm");
-    form.action = "/appello/" + postId;
 
-    document.getElementById("appelloPopup").style.display = "block";
+    if (!popup || !form) {
+        console.error("Popup o form appello non trovati");
+        return;
+    }
+
+    form.action = "/fact_checker/appelli/create/" + postId;
+
+    popup.style.display = "block";
+}
+function closePopup() {
+    const popup = document.getElementById("appelloPopup");
+    if (popup) popup.style.display = "none";
+}
+/* =========================
+   POPUP SEGNALAZIONE
+========================= */
+function openSegnalaPopup(postId) {
+    const popup = document.getElementById("segnalaPopup");
+    const form = document.getElementById("segnalaForm");
+
+    if (!popup || !form) {
+        console.error("Popup segnalazione non trovato");
+        return;
+    }
+
+    form.action = "/segnala/" + postId;
+    popup.style.display = "block";
 }
 
-function closePopup() {
-    document.getElementById("appelloPopup").style.display = "none";
-
-    const postForm = document.getElementById("postForm");
-    if (postForm) {
-        const submitBtn = postForm.querySelector("button[type='submit']");
-        submitBtn.disabled = false;
-    }
+function closeSegnalaPopup() {
+    const popup = document.getElementById("segnalaPopup");
+    if (popup) popup.style.display = "none";
 }
