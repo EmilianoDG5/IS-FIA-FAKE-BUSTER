@@ -25,11 +25,19 @@
     <div class="card">
         <h2>Crea un nuovo post</h2>
 
-        <form id="postForm">
-            <input type="text" name="titolo" placeholder="Titolo del post" required>
-            <textarea name="testo" placeholder="Testo del post" required></textarea>
-            <button type="submit">Invia</button>
-        </form>
+      <form method="POST" action="/posts" enctype="multipart/form-data">
+
+    <input type="text" name="titolo" placeholder="Titolo" required> 
+
+    <textarea name="testo"placeholder="Testo" required></textarea>
+
+    <!-- UPLOAD IMMAGINE -->
+    <input type="file"
+           name="image"
+           accept="image/png,image/jpeg,image/webp">
+
+    <button type="submit">Pubblica</button>
+</form>
     </div>
 </main>
 
@@ -53,6 +61,25 @@
 </form>
     </div>
 </div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+
+    {% if category == "danger" %}
+      <div class="alert danger">{{ message }}</div>
+    {% endif %}
+
+    {% if category == "ia_blocked" %}
+      <script>
+        window.onload = function () {
+         openAppelloPopup({{ message }}); // post_id
+        };
+      </script>
+    {% endif %}
+
+  {% endfor %}
+{% endwith %}
+
+
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>

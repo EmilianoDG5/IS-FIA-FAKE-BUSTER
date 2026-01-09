@@ -26,17 +26,29 @@
 
 <main class="container">
 {% for post in posts %}
-    <div class="post">
-        <h3>{{ post.titolo }}</h3>
-        <p>{{ post.testo }}</p>
-        <small>Score IA: {{ post.ai_score }}</small>
+<div class="post">
 
-       {% if post.account_id != session["user_id"] %}
-    <button class="danger"
-            onclick="openSegnalaPopup({{ post.id }})">
-        Segnala
-    </button>
-{% endif %}
+    <!-- AUTORE -->
+    <div class="post-header">
+        <strong>@{{ post.autore.username }}</strong>
+    </div>
+
+    <h3>{{ post.titolo }}</h3>
+    {% if post.img_url %}
+        <img src="{{ url_for('static',
+            filename='uploads/posts/' ~ post.img_url) }}"
+            class="post-img">
+    {% endif %}
+    <p>{{ post.testo }}</p>
+
+    <small>Score IA: {{ post.ai_score }}</small>
+
+    {% if post.account_id != session["user_id"] %}
+        <button class="danger"
+                onclick="openSegnalaPopup({{ post.id }})">
+            Segnala
+        </button>
+    {% endif %}
     </div>
 {% else %}
     <p>Nessun post disponibile</p>
