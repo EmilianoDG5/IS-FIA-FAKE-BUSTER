@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, session, redirect, render_templat
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.account import Account
 from app import db
+import re
 
 utenza_bp = Blueprint("utenza",  __name__)
 
@@ -29,23 +30,38 @@ def home():
         return redirect("/feed")
 
     return render_template("guest/home.html")
+
+EMAIL_REGEX = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+
 @utenza_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
 
-    if not all(k in data for k in ("username", "email", "password")):
-        return jsonify({"error": "Dati mancanti"}), 400
+    username = data.get("username")
+    email = data.get("email")
+    password = data.get("password")
 
-    if Account.query.filter(
-        (Account.username == data["username"]) |
-        (Account.email == data["email"])
-    ).first():
-        return jsonify({"error": "Utente già esistente"}), 409
+    if not username or not email or not password:
+        return jsonify({"error": "Dati mancanti"}), 400
+  
+
+    if len(username) < 1 or len(username) > 20:
+        return jsonify({"error": "Username deve avere tra 1 e 20 caratteri"}), 400
+
+    if not re.match(EMAIL_REGEX, email):
+        return jsonify({"error": "Formato email non valido"}), 400
+
+  
+    if len(password) < 8:
+        return jsonify({"error": "Password troppo breve"}), 400
+
+    if Account.query.filter_by(email=email).first():
+        return jsonify({"error": "Email già registrata"}), 409
 
     account = Account(
-        username=data["username"],
-        email=data["email"],
-        password_hash=generate_password_hash(data["password"]),
+        username=username,
+        email=email,
+        password_hash=generate_password_hash(password),
         ruolo="user"
     )
 
@@ -53,7 +69,6 @@ def register():
     db.session.commit()
 
     return jsonify({"message": "Registrazione OK"}), 201
-
 
 @utenza_bp.route("/login", methods=["POST"])
 def login():

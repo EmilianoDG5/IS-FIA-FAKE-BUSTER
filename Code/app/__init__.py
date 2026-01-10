@@ -5,14 +5,18 @@ from flask_migrate import Migrate
 db = SQLAlchemy()
 migrate = Migrate()
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
     app.config.from_object("config")
 
-    db.init_app(app)
-    migrate.init_app(app, db)
+    if test_config is not None:
+        app.config.update(test_config)
 
-    # 🔹 IMPORT E REGISTRAZIONE BLUEPRINT
+    db.init_app(app)
+
+    if not app.config.get("TESTING"):
+        migrate.init_app(app, db)
+
     from app.controllers.gestione_utenza import utenza_bp
     from app.controllers.gestione_pubblicazioni import pubblicazioni_bp
     from app.controllers.gestione_appelli import appelli_bp

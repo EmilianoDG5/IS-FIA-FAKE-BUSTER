@@ -43,22 +43,7 @@ if (loginForm) {
 /* =========================
    REGISTRAZIONE
 ========================= */
-const registerForm = document.getElementById("registerForm");
 
-if (registerForm) {
-    registerForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const res = await sendForm(registerForm, "/register");
-
-        if (res.ok) {
-            alert("Registrazione completata");
-            window.location.href = "/login";
-        } else {
-            alert("Errore durante la registrazione");
-        }
-    });
-}
 
 /* =========================
    NUOVO POST + IA
@@ -92,7 +77,7 @@ if (postForm) {
         if (result.stato === "bloccato") {
             openAppelloPopup(result.post_id);
         }
-        // ✅ PUBBLICATO → FEED
+    
         else {
             window.location.href = "/feed";
         }
@@ -122,20 +107,65 @@ function closePopup() {
 /* =========================
    POPUP SEGNALAZIONE
 ========================= */
+let currentPostId = null;
+
 function openSegnalaPopup(postId) {
-    const popup = document.getElementById("segnalaPopup");
-    const form = document.getElementById("segnalaForm");
-
-    if (!popup || !form) {
-        console.error("Popup segnalazione non trovato");
-        return;
-    }
-
-    form.action = "/segnala/" + postId;
-    popup.style.display = "block";
+    currentPostId = postId;
+    document.getElementById("segnalaPopup").style.display = "block";
 }
 
 function closeSegnalaPopup() {
-    const popup = document.getElementById("segnalaPopup");
-    if (popup) popup.style.display = "none";
+    document.getElementById("segnalaPopup").style.display = "none";
 }
+
+document.getElementById("segnalaForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const motivo = e.target.motivo.value;
+
+    const res = await fetch(`/segnala/${currentPostId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ motivo })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert(data.error); 
+        return;
+    }
+    closeSegnalaPopup();
+});
+
+
+/* =========================*/
+document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const errorMsg = document.getElementById("errorMsg");
+
+    const data = {
+        username: form.username.value,
+        email: form.email.value,
+        password: form.password.value
+    };
+
+    const res = await fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+        errorMsg.innerText = result.error;
+        errorMsg.style.display = "block";
+        return;
+    }
+
+    // successo
+    window.location.href = "/login";
+});
