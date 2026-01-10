@@ -32,17 +32,28 @@ def fact_checker_review_post(post_id):
     return render_template("fact_checker/review_post.html", post=post)
 
 # ---------- API ----------
-
 @segnalazioni_bp.route("/segnala/<int:post_id>", methods=["POST"])
 def segnala_post_by_user(post_id):
     if "user_id" not in session:
         return redirect("/login")
 
     motivo = request.form.get("motivo")
+    user_id = session["user_id"]
+
+
+    segnalazione_esistente = Segnalazione.query.filter_by(
+        post_id=post_id,
+        segnalatore_id=user_id
+    ).first()
+
+    if segnalazione_esistente:
+        return jsonify({
+            "error": "Segnalazione già inviata"
+        }), 409
 
     segnalazione = Segnalazione(
         post_id=post_id,
-        segnalatore_id=session["user_id"],
+        segnalatore_id=user_id,
         motivo=motivo,
         stato="aperta"
     )
@@ -50,7 +61,7 @@ def segnala_post_by_user(post_id):
     db.session.add(segnalazione)
     db.session.commit()
 
-    return redirect("/feed")
+    return jsonify({"message": "Segnalazione inviata"}), 201
 # ===== DECISIONE SU SEGNALAZIONE =====
 
 @segnalazioni_bp.route("/fact_checker/segnalazioni/publish/<int:seg_id>", methods=["POST"])
@@ -83,4 +94,3 @@ def fact_checker_block_segnalazione(seg_id):
 
     db.session.commit()
     return redirect("/dashboard")
-
