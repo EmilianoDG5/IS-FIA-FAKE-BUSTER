@@ -63,14 +63,14 @@ class AIService:
             text,
             return_tensors="pt",
             truncation=True,
-            max_length=256
+            max_length=512
         )
 
         with torch.no_grad():
             outputs = self.model(**inputs)
             probs = torch.softmax(outputs.logits, dim=1)
 
-        score = probs[0][0].item()
+        score = probs[0][1].item()
 
         ai_log = {
             "timestamp": datetime.utcnow().isoformat(),
