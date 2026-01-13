@@ -57,6 +57,10 @@ def register():
 
     if Account.query.filter_by(email=email).first():
         return jsonify({"error": "Email già registrata"}), 409
+    
+    if Account.query.filter_by(username=username).first():
+     return jsonify({"error": "Username già in uso"}), 409
+
 
     account = Account(
         username=username,

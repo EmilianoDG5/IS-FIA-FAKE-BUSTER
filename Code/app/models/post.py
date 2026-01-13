@@ -26,3 +26,9 @@ class Post(db.Model):
         backref="post",
         cascade="all, delete-orphan"
     )
+
+    segnalazione = db.relationship(
+        "Segnalazione",
+        back_populates="post",
+        cascade="all, delete-orphan"
+    )

@@ -9,18 +9,26 @@
 
 <header>
     <div class="header">
-         <div class="logo">
-        <img src="{{ url_for('static', filename='img/logo_fakebuster.png') }}" height="40">
-        <h1>FakeBuster</h1>
-    </div>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/logo_fakebuster.png') }}" height="40">
+            <h1>FakeBuster</h1>
+        </div>
+
         <nav>
+            <a href="/new_post">Nuovo Post</a>
             <a href="/feed">Feed</a>
             <a href="/my_posts">I miei post</a>
-            <a href="/logout">Logout</a>
+
+            <!-- MENU UTENTE -->
+            <div class="user-menu">
+                <span class="username">{{ username }}</span>
+                <div class="dropdown">
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
         </nav>
     </div>
 </header>
-
 <main class="container">
     <div class="card">
         <h2>Crea un nuovo post</h2>

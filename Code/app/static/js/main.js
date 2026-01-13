@@ -169,3 +169,4 @@ document.getElementById("registerForm")?.addEventListener("submit", async (e) =>
     // successo
     window.location.href = "/login";
 });
+

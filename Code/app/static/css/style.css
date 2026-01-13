@@ -8,9 +8,7 @@ body {
     font-family: Inter, Arial, sans-serif;
     background: #f4f6f8;
     color: #111827;
-}
-
-/* ===== HEADER ===== */
+}/* ===== HEADER ===== */
 header {
     background: #0D5F9A;
     color: white;
@@ -31,11 +29,69 @@ header {
     gap: 12px;
 }
 
+nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 nav a {
     color: white;
-    margin-left: 16px;
     text-decoration: none;
     font-weight: 500;
+}
+
+/* ===== USER MENU ===== */
+.user-menu {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    padding-bottom: 10px; 
+
+}
+.username {
+    font-weight: bold;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.username:hover {
+    background: rgba(255,255,255,0.15);
+    
+}
+
+/* ===== DROPDOWN ===== */
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;       
+    background-color: #0D5F9A;
+    min-width: 140px;
+    border-radius: 8px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+    z-index: 1000;
+}
+
+.dropdown a {
+    display: block;
+    padding: 12px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.dropdown a:hover {
+    background-color: #e74c3c;
+     border-radius: 6px;
+}
+
+/* MOSTRA MENU AL PASSAGGIO DEL MOUSE */
+.user-menu:hover .dropdown {
+    display: block;
 }
 
 /* ===== CONTAINER ===== */
@@ -249,3 +305,4 @@ margin-bottom: 5px;
     color: #991b1b;
   text-align: center;
 }
+

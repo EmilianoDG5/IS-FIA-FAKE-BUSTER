@@ -41,7 +41,9 @@ def new_post_page():
     if session.get("ruolo") == "fact_checker":
         return redirect("/dashboard")
 
-    return render_template("user/new_post.html")
+    return render_template("user/new_post.html"
+    , username=session.get("username")
+ )
 
 #---------- API ----------,
 
@@ -76,7 +78,7 @@ def create_post():
         return redirect("/new_post")
 
     # ===== DECISIONE IA =====
-    stato = "bloccato" if score <= (1 - SCORE_THRESHOLD) else "pubblicato"
+    stato = "bloccato" if score >= SCORE_THRESHOLD else "pubblicato"
 
     # ===== UPLOAD IMMAGINE =====
     image = request.files.get("image")
@@ -109,7 +111,7 @@ def create_post():
 
     # ===== UI =====
     if stato == "bloccato":
-        flash(str(post.id), "ia_blocked")   # 👈 passiamo l’ID
+        flash(str(post.id), "ia_blocked")  
         return redirect("/new_post")
 
     return redirect("/my_posts")
@@ -142,4 +144,8 @@ def my_posts():
         return redirect("/dashboard")
 
     posts = Post.query.filter_by(account_id=session["user_id"]).all()
-    return render_template("user/my_posts.html", posts=posts)
+    return render_template(
+    "user/my_posts.html",
+    posts=posts,
+    username=session.get("username")
+)
