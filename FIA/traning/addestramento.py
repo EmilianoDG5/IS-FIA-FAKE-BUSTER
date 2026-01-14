@@ -5,25 +5,40 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trainer, TrainingArguments
 
+import numpy as np
+import torch
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
 def compute_metrics(eval_pred):
     logits, labels = eval_pred
-    predictions = logits.argmax(axis=-1)
+
+    # Probabilità
+    probs = torch.softmax(torch.tensor(logits), dim=1).numpy()
+
+    score_fake = probs[:, 1]          
+    THRESHOLD = 0.7                   
+
+    # Decisione come in produzione
+    predictions = (score_fake >= THRESHOLD).astype(int)
 
     precision, recall, f1, _ = precision_recall_fscore_support(
         labels,
         predictions,
-        average="binary"
+        pos_label=0,                  
+        average="binary",
+        zero_division=0
     )
 
     accuracy = accuracy_score(labels, predictions)
 
     return {
         "accuracy": accuracy,
-        "precision": precision,
-        "recall": recall,
-        "f1": f1
+        "precision_real": precision,
+        "recall_real": recall,
+        "f1_real": f1
     }
+
+
 
 
 def main():
@@ -34,9 +49,11 @@ def main():
 
     # Caricamento dataset
     df = pd.read_csv(dataset_path)
-    MAX_SAMPLES = 10000
-    df = df.sample(n=MAX_SAMPLES, random_state=42)
-
+    df["label"] = df["label"].apply(lambda x: 1 if x == 0 else 0)
+    MAX_SAMPLES = 1000
+    
+    df = df.groupby("label", group_keys=False)\
+     .apply(lambda x: x.sample(n=500, random_state=42))
     print(f"Avvio training su {len(df)} articoli...")
 
     train_texts, val_texts, train_labels, val_labels = train_test_split(
@@ -87,10 +104,9 @@ def main():
         num_labels=2
     )
 
-    # Parametri training CON VALUTAZIONE
     training_args = TrainingArguments(
         output_dir="./results",
-        num_train_epochs=2,
+        num_train_epochs=4,
         per_device_train_batch_size=8,
         per_device_eval_batch_size=8,
         do_eval=True,

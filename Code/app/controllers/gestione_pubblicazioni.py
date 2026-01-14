@@ -78,7 +78,7 @@ def create_post():
         return redirect("/new_post")
 
     # ===== DECISIONE IA =====
-    stato = "bloccato" if score >= SCORE_THRESHOLD else "pubblicato"
+    stato = "pubblicato" if score >= SCORE_THRESHOLD else "bloccato"
 
     # ===== UPLOAD IMMAGINE =====
     image = request.files.get("image")
