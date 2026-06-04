@@ -1,6 +1,6 @@
 # 🛡️ FakeBuster - IA per il contrasto alle Fake News
 
-![FakeBuster Banner](https://via.placeholder.com/800x200.png?text=Fake+Buster+-+Intelligenza+Artificiale+contro+la+Disinformazione)
+
 
 **FakeBuster** è una piattaforma sperimentale basata su architettura web che integra modelli avanzati di Intelligenza Artificiale (NLP e Deep Learning) e partecipazione umana per creare un ecosistema informativo affidabile. L'obiettivo principale è ridurre la diffusione di disinformazione bloccandone la pubblicazione alla radice tramite una validazione preventiva e automatizzata.
 
